@@ -103,7 +103,8 @@ def main(subset_size=.1, greedy=0):
         os.makedirs(args.save_dir)
 
     model = torch.nn.DataParallel(resnet.__dict__[args.arch]())
-    model.cuda()
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model.to(device)
 
     # optionally resume from a checkpoint
     if args.resume:
