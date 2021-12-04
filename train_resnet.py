@@ -218,7 +218,7 @@ def main(subset_size=.1, greedy=0):
             print(f'Random init subset size: {args.random_subset_size}% = {B}')
 
         model = torch.nn.DataParallel(resnet.__dict__[args.arch]())
-        model.cuda()
+        model.to(device)
 
         best_prec1, best_loss = 0, 1e10
 
@@ -313,7 +313,7 @@ def main(subset_size=.1, greedy=0):
                         selected_ndx[run, epoch], selected_wgt[run, epoch] = subset, subset_weight
 
                     weights[subset] = subset_weight
-                    weight = torch.from_numpy(weights).float().cuda()
+                    weight = torch.from_numpy(weights).float().to(device)
                     # weight = torch.tensor(weights).cuda()
                     # np.random.shuffle(subset)
                     print(f'FL time: {ordering_time:.3f}, Sim time: {similarity_time:.3f}')
