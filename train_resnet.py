@@ -84,6 +84,7 @@ parser.add_argument('--cluster_features', '-cf', dest='cluster_features', action
 parser.add_argument('--cluster_all', '-ca', dest='cluster_all', action='store_true', help='cluster_all')
 parser.add_argument('--start-subset', '-st', default=0, type=int, metavar='N', help='start subset selection')
 parser.add_argument('--save_subset', dest='save_subset', action='store_true', help='save_subset')
+parser.add_argument('--save_path', dest='save_path',type=str, default='../')
 
 TRAIN_NUM = 50000
 CLASS_NUM = 10
@@ -285,6 +286,10 @@ def main(subset_size=.1, greedy=0):
                     subset = order[:B]
                     weights = np.zeros(len(indexed_loader.dataset))
                     weights[subset] = np.ones(B)
+                    
+                    os.makedirs(os.path.join(args.save_path, 'random_subset'), exist_ok=True)
+                    np.save(os.path.join(args.save_path, 'random_subset', f'{epoch}.npy'), subset)
+                    
                     print(f'Selecting {B} element from the pre-selected random subset of size: {len(subset)}')
                 else:  # Note: warm start
                     if args.cluster_features:
@@ -306,6 +311,9 @@ def main(subset_size=.1, greedy=0):
                         B, preds, 'euclidean', smtk=args.smtk, no=0, y=fl_labels, stoch_greedy=args.st_grd,
                         equal_num=True)
 
+                    os.makedirs(os.path.join(args.save_path, 'criag_subset'), exist_ok=True)
+                    np.save(os.path.join(args.save_path, 'criag_subset', f"{epoch}.npy"), subset)
+                    
                     weights = np.zeros(len(indexed_loader.dataset))
                     # weights[subset] = np.ones(len(subset))
                     subset_weight = subset_weight / np.sum(subset_weight) * len(subset_weight)
