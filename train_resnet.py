@@ -563,12 +563,13 @@ def predictions(loader, model):
     # switch to evaluate mode
     model.eval()
 
-    preds = torch.zeros(TRAIN_NUM, CLASS_NUM).cuda()
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    preds = torch.zeros(TRAIN_NUM, CLASS_NUM).to(device)
     labels = torch.zeros(TRAIN_NUM, dtype=torch.int)
     end = time.time()
     with torch.no_grad():
         for i, (input, target, idx) in enumerate(loader):
-            input_var = input.cuda()
+            input_var = input.to(device)
 
             if args.half:
                 input_var = input_var.half()
